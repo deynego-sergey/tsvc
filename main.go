@@ -48,13 +48,22 @@ func main() {
 	for {
 		select {
 		case <-outPrintTicker.C:
-			log.Printf("JSON sma : %v  avg:%v   len:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON), len(*timeRowJSON))
-			log.Printf("SSE sma : %v  avg:%v   len:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE), len(*timeRowSSE))
+			if conf.Mode() == "ALL" || conf.Mode() == "JSON" {
+				log.Printf("JSON sma : %v  avg:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON))
+			}
+			
+			if conf.Mode() == "ALL" || conf.Mode() == "SSE" {
+				log.Printf("SSE sma : %v  avg:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE))
+			}
 
 		case <-ctx.Done():
 			outPrintTicker.Stop()
-			log.Printf("JSON sma : %v  avg:%v   len:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON), len(*timeRowJSON))
-			log.Printf("SSE sma : %v  avg:%v   len:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE), len(*timeRowSSE))
+			if conf.Mode() == "ALL" || conf.Mode() == "JSON" {
+				log.Printf("JSON sma : %v  avg:%v   len:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON))
+			}
+			if conf.Mode() == "ALL" || conf.Mode() == "SSE" {
+				log.Printf("SSE sma : %v  avg:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE))
+			}
 			return
 
 		case v := <-dataJSON:
