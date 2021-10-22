@@ -25,9 +25,9 @@ func NewConfig() IConfig {
 }
 
 func (c *Config) init() {
-	c.updatePeriod = *flag.Int64("upd", int64(3*time.Second), "update period (nanosec) default: 3000000000 ns")
+	c.updatePeriod = *flag.Int64("upd", int64(1*time.Second), "update period (nanosec) default: 1s (1000000000 ns)")
 	c.mode = strings.ToUpper(*flag.String("mode", "ALL", "set data source server : JSON or SSE or ALL (default)"))
-	c.timeFrameWidth = *flag.Int64("tf", int64(5*time.Second), "width TimeFrame (ns) int, default : 5 s (5000000000 ns) ")
+	c.timeFrameWidth = *flag.Int64("tf", int64(10*time.Second), "width TimeFrame (ns) int, default : 10 s (10000000000 ns) ")
 	flag.Parse()
 }
 

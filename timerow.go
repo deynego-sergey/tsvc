@@ -1,27 +1,37 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type (
 	TimeRow []DataItem
 )
 
+//
 func (row *TimeRow) Add(v DataItem) {
 	*row = append(*row, v)
 }
 
-func (row *TimeRow) UpdateWindow(width int64) {
-	tc := time.Now().UnixNano()
-	lowTreshold := tc - width
-
-	for k, v := range *row {
+// UpdateDataFrame - удаляет данные которые вышли за пределы временного окна
+//
+func (row *TimeRow) UpdateDataFrame(frameWidth int64) {
+	lowTreshold := time.Now().UnixNano() - frameWidth
+	var _tmp TimeRow
+	for _, v := range *row {
 		if v.Time >= lowTreshold {
-			*row = (*row)[k:]
-			break
+			_tmp = append(_tmp, v)
 		}
 	}
+	if len(_tmp) > 0 {
+		*row = _tmp
+		_tmp = nil //runtime.GC()
+	}
+
 }
 
+// Average - возвращает скользящее среднее
+//
 func (row *TimeRow) Average() float64 {
 
 	if len(*row) > 0 {

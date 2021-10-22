@@ -5,11 +5,10 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"runtime"
 	"time"
 )
 
-const frameSize int64 = int64(15 * time.Second)
+//const frameSize int64 = int64(15 * time.Second)
 
 func main() {
 
@@ -51,7 +50,7 @@ func main() {
 			if conf.Mode() == "ALL" || conf.Mode() == "JSON" {
 				log.Printf("JSON sma : %v  avg:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON))
 			}
-			
+
 			if conf.Mode() == "ALL" || conf.Mode() == "SSE" {
 				log.Printf("SSE sma : %v  avg:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE))
 			}
@@ -59,29 +58,27 @@ func main() {
 		case <-ctx.Done():
 			outPrintTicker.Stop()
 			if conf.Mode() == "ALL" || conf.Mode() == "JSON" {
-				log.Printf("JSON sma : %v  avg:%v   len:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON))
+				log.Printf("JSON sma : %v  avg:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON))
 			}
 			if conf.Mode() == "ALL" || conf.Mode() == "SSE" {
-				log.Printf("SSE sma : %v  avg:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE))
+				log.Printf("SSE sma : %v  avg:%v ", timeRowSSE.Average(), sumSSE/float64(counterSSE))
 			}
 			return
 
 		case v := <-dataJSON:
 			timeRowJSON.Add(v)
-			timeRowJSON.UpdateWindow(frameSize)
+			timeRowJSON.UpdateDataFrame(conf.TimeFrameWidth())
 			sumJSON += v.Value
 			counterJSON++
-		//	log.Printf( "JSON sma : %v  avg:%v   len:%v", timeRowJSON.Average(), sumJSON/float64(counterJSON) , len(*timeRowJSON))
 
 		case v := <-dataSSE:
 			timeRowSSE.Add(v)
-			timeRowSSE.UpdateWindow(frameSize)
+			timeRowSSE.UpdateDataFrame(int64(conf.TimeFrameWidth()) /*conf.TimeFrameWidth()*/)
 			sumSSE += v.Value
 			counterSSE++
-		//	log.Printf( "SSE sma : %v  avg:%v   len:%v", timeRowSSE.Average(), sumSSE/float64(counterSSE) , len(*timeRowSSE))
 
 		default:
-			runtime.Gosched()
+			time.Sleep(1 * time.Millisecond)
 		}
 	}
 }
