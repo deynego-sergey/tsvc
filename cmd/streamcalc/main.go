@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"streamcalc"
 	"time"
 )
 

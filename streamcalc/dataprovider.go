@@ -1,4 +1,4 @@
-package main
+package streamcalc
 
 import (
 	"bufio"
@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	JsonUrl string = "http://78.47.241.61:24433/stream"
+	JsonUrl string = "http://78.47.241.61:24433/streamcalc"
 	EvtUrl  string = "http://78.47.241.61:24433/sse"
 )
 
